@@ -1,29 +1,49 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <v-navigation-drawer
+      absolute
+      app
+      overflow
+      temporary
+      v-model="primaryDrawer.model">
+    </v-navigation-drawer>
+    <v-toolbar absolute app clipped-left>
+      <v-toolbar-side-icon
+        @click.stop="primaryDrawer.model = !primaryDrawer.model"
+        v-if="primaryDrawer.type !== 'permanent'"
+      ></v-toolbar-side-icon>
+      <v-toolbar-title>Vuetify</v-toolbar-title>
+    </v-toolbar>
+    <v-content>
+      <router-view></router-view>
+    </v-content>
+    <v-footer :inset="footer.inset" app>
+      <span class="px-3">&copy; {{ new Date().getFullYear() }}</span>
+    </v-footer>
+  </v-app>
+
 </template>
 
-<style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
+<script>
+  import HelloWorld from './components/BarChart'
+
+  export default {
+    name: 'App',
+    components: {
+      HelloWorld
+    },
+    data: () => ({
+      drawers: ['Default (no property)', 'Permanent', 'Temporary'],
+      primaryDrawer: {
+        model: null,
+        type: 'default (no property)',
+        clipped: false,
+        floating: true,
+        mini: false
+      },
+      footer: {
+        inset: false
     }
+    })
   }
-}
-</style>
+</script>

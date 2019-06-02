@@ -1,22 +1,23 @@
 <template>
-  <div class="hello">
+  <div class="hello" style="height: 100%">
     <div ref="mapoutput" style="height: 100%;">
       <!--      <div style="position:absolute;">-->
       <!--&lt;!&ndash;        <h1>{{width}}x{{height}}</h1>&ndash;&gt;-->
       <!--        <v-btn v-for="(item, key) in projections" :key="key" @click="selected(item)">{{key}}</v-btn>-->
       <!--      </div>-->
 
-      <svg :height="height" :width="width" class="binded" viewBox="256 32 400 400">
+      <svg
+        :height="height" :width="width" class="binded" viewBox="256 32 400 400">
         <g class="group">
-          <path :d="generatePath" class="sphere"></path>
+          <path :d="generatePath" class="sphere" v-once></path>
           <path
-            :d="generator(count)"
+            :d="generator(country)"
             :key="index"
-            @click="countryClicked(count)"
+            @click="countryClicked(country.id)"
             class="land"
-            v-for="(count , index) in countries.features"
+            v-for="(country , index) in countries.features"
           >
-            <title>{{detailInfo[count.id]}}</title>
+            <title>{{detailInfo[country.id]}}</title>
           </path>
         </g>
       </svg>
@@ -55,8 +56,9 @@
     console.log('created')
 
     tsv('https://unpkg.com/world-atlas@1.1.4/world/50m.tsv').then(ddd => {
+      console.log(ddd)
       ddd.forEach(el => {
-        this.detailInfo[el.iso_n3] = el.name
+        this.detailInfo[el.iso_n3] = el
       })
     })
 
@@ -81,7 +83,10 @@
   },
   methods: {
     countryClicked (count) {
-      console.log('count', count)
+      console.log('countryClick', JSON.stringify(count))
+      console.log('@API', 'http://localhost:3000/countries/' + this.detailInfo[count].iso_a3)
+      json('http://localhost:3000/countries/' + this.detailInfo[count].iso_a3)
+        .then(data => console.log(data))
     },
     selected (item) {
       console.log('SELECTED', item)
